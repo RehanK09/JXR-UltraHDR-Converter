@@ -1,19 +1,38 @@
 import imagecodecs
 
 from src.hdr_engine import HDREngine
+from src.ultrahdr import UltraHDR
 
 
 def load_jxr(path):
 
-    with open(path, "rb") as f:
-        data = f.read()
+    with open(path,"rb") as f:
 
-    img = imagecodecs.jpegxr_decode(data)
+        data=f.read()
 
-    engine = HDREngine()
+    img=imagecodecs.jpegxr_decode(data)
 
-    img = engine.load(img)
+    engine=HDREngine()
 
-    img = engine.process(img)
+    img=engine.load(img)
 
-    return img, engine
+    img=engine.process(img)
+
+    return img,engine
+
+
+def encode_ultrahdr(img,output):
+
+    h,w,_=img.shape
+
+    UltraHDR().encode(
+
+        img,
+
+        w,
+
+        h,
+
+        output
+
+    )

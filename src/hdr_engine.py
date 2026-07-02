@@ -1,5 +1,6 @@
 import numpy as np
 from src.image_processing import analyze
+from src import tone_mapping
 
 class HDREngine:
     def __init__(self):
@@ -38,7 +39,7 @@ class HDREngine:
     def filmic(self, img):
         rgb = img[..., :3]
         x = np.maximum(rgb - 0.004, 0.0)
-        rgb = (x * (6.2 * x + 0.5)) / (x * (6.2 * x + 1.7) + 0.06)
+        rgb = tone_mapping.aces(x)
         img[..., :3] = np.clip(rgb, 0, 1)
         return img
     

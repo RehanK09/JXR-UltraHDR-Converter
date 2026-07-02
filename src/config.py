@@ -14,7 +14,7 @@ DEBUG_DIR = ROOT / "Debug"
 
 ULTRAHDR_DIR = ROOT / "ultrahdr"
 
-ULTRAHDR_EXE = ULTRAHDR_DIR / "ultrahdr_app.exe"
+ULTRAHDR_EXE = r"D:\Apps\New folder\libultrahdr-1.4.0\libultrahdr-1.4.0\build\Release\ultrahdr_app.exe"
 METADATA_CFG = ULTRAHDR_DIR / "metadata.cfg"
 
 # =====================================================

@@ -11,6 +11,8 @@ from src.debug import save_report
 
 from src.scene import classify
 
+from src.debug import save_json
+
 
 def main():
 
@@ -36,6 +38,11 @@ def main():
     save_report(
         engine.get_stats(),
         OUTPUT_DIR / "analysis.txt"
+    )
+
+    save_json(
+        engine.get_stats(),
+        OUTPUT_DIR / "analysis.json"
     )
 
 
