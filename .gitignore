@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+
+Temp/
+Output/
+Logs/
+Debug/
+
+*.raw
+*.jpg
+*.png
+
+.vscode/
+
+converted_files.txt
