@@ -16,24 +16,22 @@ for file in INPUT.glob("*.jxr"):
 
     print(f"\nProcessing {file.name}")
 
-    img, engine = load_jxr(file)
+    hdr, sdr, engine = load_jxr(file)
 
-    h, w, _ = img.shape
+    h, w, _ = hdr.shape
 
     preview = (
-        img[..., :3] * 255
-    ).clip(0, 255).astype("uint8")
+        sdr[..., :3] * 255
+    ).clip(0,255).astype("uint8")
 
     Image.fromarray(preview).save(
-        OUTPUT / "preview.png"
+        OUTPUT / f"{file.stem}_preview.png"
     )
 
     encode_ultrahdr(
-
-        img,
-
+        hdr,
+        sdr,
         OUTPUT / f"{file.stem}.jpg"
-
     )
 
     print("Done.")

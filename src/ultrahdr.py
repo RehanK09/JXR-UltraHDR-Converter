@@ -1,7 +1,6 @@
 from pathlib import Path
 import subprocess
 import tempfile
-import shutil
 import numpy as np
 
 from src.config import ULTRAHDR_EXE
@@ -28,13 +27,14 @@ class UltraHDR:
 
     def encode(
         self,
-        img,
+        hdr,
+        sdr,
         width,
         height,
         output
     ):
 
-        raw = self.write_half_float(img)
+        raw = self.write_half_float(hdr)
 
         output = Path(output)
 
@@ -42,44 +42,39 @@ class UltraHDR:
 
             str(self.exe),
 
-            "-m","0",
+            "-m", "0",
 
-            "-p",str(raw),
+            "-p", str(raw),
 
-            "-a","4",
+            "-a", "4",
 
-            "-t","0",
+            "-t", "0",
 
-            "-C","1",
+            "-C", "1",
 
-            "-w",str(width),
+            "-w", str(width),
 
-            "-h",str(height),
+            "-h", str(height),
 
-            "-q","100",
+            "-q", "100",
 
-            "-Q","100",
+            "-Q", "100",
 
-            "-D","1",
+            "-D", "1",
 
-            "-z",str(output)
+            "-z", str(output)
 
         ]
 
         result = subprocess.run(
-
             cmd,
-
             capture_output=True,
-
             text=True
-
         )
 
         raw.unlink(missing_ok=True)
 
         if result.returncode != 0:
-
             raise RuntimeError(result.stderr)
 
         return output.exists()

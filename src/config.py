@@ -17,6 +17,8 @@ ULTRAHDR_DIR = ROOT / "ultrahdr"
 ULTRAHDR_EXE = r"D:\Apps\New folder\libultrahdr-1.4.0\libultrahdr-1.4.0\build\Release\ultrahdr_app.exe"
 METADATA_CFG = ULTRAHDR_DIR / "metadata.cfg"
 
+TEMP_FOLDER = r"Temp"
+
 # =====================================================
 # IMAGE SETTINGS
 # =====================================================
@@ -41,5 +43,7 @@ FILMIC = True
 SAVE_SDR_PREVIEW = True
 
 SAVE_HDR_STATS = True
+
+
 
 # =====================================================
