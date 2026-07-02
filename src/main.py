@@ -7,6 +7,8 @@ from src.config import OUTPUT_DIR
 
 from src.converter import load_jxr
 
+from src.debug import save_report
+
 
 def main():
 
@@ -28,6 +30,12 @@ def main():
         OUTPUT_DIR / "preview.png",
         optimize=True
     )
+
+    save_report(
+        engine.get_stats(),
+        OUTPUT_DIR / "analysis.txt"
+    )
+
 
     print()
 

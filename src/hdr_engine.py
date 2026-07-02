@@ -27,13 +27,24 @@ class HDREngine:
 
         return img
 
+    
     def auto_exposure(self, img):
 
         rgb = img[..., :3]
 
+        p50 = self.stats["median"]
+        p95 = self.stats["p95"]
+        p99 = self.stats["p99"]
+
         target = 0.82
 
-        exposure = target / max(self.stats["p95"], 0.001)
+        exposure = target / max(p95, 0.01)
+
+        if p99 > 4:
+            exposure *= 0.92
+
+        if p50 < 0.02:
+            exposure *= 1.08
 
         rgb *= exposure
 
@@ -52,6 +63,22 @@ class HDREngine:
         img[..., :3] = np.clip(rgb, 0, 1)
 
         return img
+    
+    def recover_highlights(self, img):
+
+        rgb = img[..., :3]
+
+        mask = rgb > 0.85
+
+        rgb[mask] = (
+            0.85 +
+            np.tanh((rgb[mask] - 0.85) * 1.7) * 0.15
+        )
+
+        img[..., :3] = rgb
+
+        return img
+
 
     def preserve_blacks(self, img):
 
@@ -64,7 +91,7 @@ class HDREngine:
         img[..., :3] = rgb
 
         return img
-
+    
     def process(self, img):
 
         img = self.normalize(img)
@@ -72,6 +99,8 @@ class HDREngine:
         img = self.auto_exposure(img)
 
         img = self.filmic(img)
+
+        img = self.recover_highlights(img)
 
         img = self.preserve_blacks(img)
 
