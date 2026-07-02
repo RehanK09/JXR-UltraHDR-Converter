@@ -1,68 +1,39 @@
 from pathlib import Path
+
 from PIL import Image
-import numpy as np
 
-from src.config import INPUT_DIR
-from src.config import OUTPUT_DIR
+from src.converter import (
+    load_jxr,
+    encode_ultrahdr
+)
 
-from src.converter import load_jxr
+INPUT = Path("Input")
+OUTPUT = Path("Output")
 
-from src.debug import save_report
+OUTPUT.mkdir(exist_ok=True)
 
-from src.scene import classify
+for file in INPUT.glob("*.jxr"):
 
-from src.debug import save_json
+    print(f"\nProcessing {file.name}")
 
+    img, engine = load_jxr(file)
 
-def main():
+    h, w, _ = img.shape
 
-    OUTPUT_DIR.mkdir(exist_ok=True)
+    preview = (
+        img[..., :3] * 255
+    ).clip(0, 255).astype("uint8")
 
-    files = list(INPUT_DIR.glob("*.jxr"))
-
-    if not files:
-        print("No JXR files.")
-        return
-
-    img, engine = load_jxr(files[0])
-
-    rgb = np.clip(img[..., :3], 0, 1)
-
-    rgb = (rgb * 255).astype(np.uint8)
-
-    Image.fromarray(rgb).save(
-        OUTPUT_DIR / "preview.png",
-        optimize=True
+    Image.fromarray(preview).save(
+        OUTPUT / "preview.png"
     )
 
-    save_report(
-        engine.get_stats(),
-        OUTPUT_DIR / "analysis.txt"
+    encode_ultrahdr(
+
+        img,
+
+        OUTPUT / f"{file.stem}.jpg"
+
     )
 
-    save_json(
-        engine.get_stats(),
-        OUTPUT_DIR / "analysis.json"
-    )
-
-
-    print()
-
-    print("=" * 60)
-
-    for k, v in engine.get_stats().items():
-        print(f"{k:20}: {v}")
-
-    print("=" * 60)
-
-    print()
-
-    print("Preview saved.")
-
-    print()
-
-    print("Scene:",classify(engine.get_stats()))
-
-
-if __name__ == "__main__":
-    main()
+    print("Done.")
