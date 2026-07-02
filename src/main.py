@@ -9,6 +9,8 @@ from src.converter import load_jxr
 
 from src.debug import save_report
 
+from src.scene import classify
+
 
 def main():
 
@@ -49,6 +51,10 @@ def main():
     print()
 
     print("Preview saved.")
+
+    print()
+
+    print("Scene:",classify(engine.get_stats()))
 
 
 if __name__ == "__main__":

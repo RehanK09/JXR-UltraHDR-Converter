@@ -42,3 +42,23 @@ def analyze(img):
 def is_hdr(img):
 
     return img[..., :3].max() > 1.0
+
+def luminance(rgb):
+
+    return (
+        rgb[...,0]*0.2126 +
+        rgb[...,1]*0.7152 +
+        rgb[...,2]*0.0722
+    )
+
+
+def normalize_luminance(rgb):
+
+    lum = luminance(rgb)
+
+    scale = np.divide(
+        1.0,
+        np.maximum(lum,0.00001)
+    )
+
+    return rgb, lum, scale
