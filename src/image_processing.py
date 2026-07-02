@@ -1,28 +1,44 @@
 import numpy as np
 
+
 def analyze(img):
 
-    rgb = img[...,0:3]
+    rgb = img[..., :3]
 
-    return {
+    rgb = rgb.astype(np.float32)
 
-        "minimum": float(rgb.min()),
+    lum = (
+        rgb[..., 0] * 0.2126 +
+        rgb[..., 1] * 0.7152 +
+        rgb[..., 2] * 0.0722
+    )
 
-        "maximum": float(rgb.max()),
+    stats = {}
 
-        "mean": float(rgb.mean()),
+    stats["minimum"] = float(rgb.min())
+    stats["maximum"] = float(rgb.max())
 
-        "median": float(np.median(rgb)),
+    stats["mean"] = float(rgb.mean())
+    stats["median"] = float(np.median(rgb))
 
-        "p90": float(np.percentile(rgb,90)),
+    stats["p90"] = float(np.percentile(rgb, 90))
+    stats["p95"] = float(np.percentile(rgb, 95))
+    stats["p99"] = float(np.percentile(rgb, 99))
 
-        "p95": float(np.percentile(rgb,95)),
+    stats["lum_mean"] = float(lum.mean())
+    stats["lum_median"] = float(np.median(lum))
 
-        "p99": float(np.percentile(rgb,99))
+    stats["dark_ratio"] = float(np.mean(lum < 0.02))
+    stats["bright_ratio"] = float(np.mean(lum > 1.0))
 
-    }
+    stats["dynamic_range"] = float(
+        np.percentile(lum, 99.9) /
+        max(np.percentile(lum, 1), 0.00001)
+    )
+
+    return stats
 
 
 def is_hdr(img):
 
-    return img[...,0:3].max() > 1.0
+    return img[..., :3].max() > 1.0
