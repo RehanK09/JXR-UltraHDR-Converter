@@ -3,19 +3,36 @@ import subprocess
 import tempfile
 import numpy as np
 
-from src.config import ULTRAHDR_EXE
-
 
 class UltraHDR:
 
     def __init__(self):
 
-        self.exe = Path(ULTRAHDR_EXE)
+        # Project root:
+        # JXR-UltraHDR-Converter/
+        project_root = Path(__file__).resolve().parent.parent
 
-        if not self.exe.exists():
+        # Search for ultrahdr_app.exe anywhere inside the project's
+        # ultrahdr folder.
+        ultrahdr_folder = project_root / "ultrahdr"
+
+        matches = list(ultrahdr_folder.rglob("ultrahdr_app.exe"))
+
+        if not matches:
             raise FileNotFoundError(
-                f"UltraHDR executable not found:\n{self.exe}"
+                "UltraHDR executable not found.\n\n"
+                f"Expected it somewhere inside:\n"
+                f"{ultrahdr_folder}\n\n"
+                "Make sure ultrahdr_app.exe is included in the "
+                "'ultrahdr' folder."
             )
+
+        # Use the first matching executable
+        self.exe = matches[0]
+
+        print(f"Using UltraHDR executable:")
+        print(self.exe)
+        print()
 
     def write_half_float(self, img):
 
@@ -75,6 +92,10 @@ class UltraHDR:
         raw.unlink(missing_ok=True)
 
         if result.returncode != 0:
-            raise RuntimeError(result.stderr)
+
+            raise RuntimeError(
+                "UltraHDR conversion failed:\n\n"
+                + result.stderr
+            )
 
         return output.exists()
