@@ -41,4 +41,5 @@ JXR-UltraHDR-Converter/
 │
 ├── README.md
 ├── RUN.bat                # One-click application launcher
+├── requirements.txt       # Python dependencies
 └── .gitignore
